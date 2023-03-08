@@ -46,7 +46,7 @@ const SignUpLayout: React.FC<Props> = ({
 }) => {
   return (
     <KeyboardAvoidWrapper>
-      <SafeArea>
+      <SafeArea className="flex-1 bg-white dark:bg-black">
         <View className="flex-1 flex gap-y-5 px-4">
           <TouchableOpacity
             onPress={onPress}

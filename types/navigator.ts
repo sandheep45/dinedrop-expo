@@ -42,6 +42,8 @@ export type HomePageParamList = {
   NotificationPage: undefined;
   RatingPage: undefined;
   VoucherPage: undefined;
+  RestrauntDetail: undefined;
+  ProductDetail: undefined;
 };
 
 export type ChatPageParamList = {

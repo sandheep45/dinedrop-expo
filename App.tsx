@@ -46,10 +46,10 @@ const getRouteName = (
   route: RouteProp<MainPageParamList, "ChatStack">
 ): "none" | "flex" => {
   const routeName = getFocusedRouteNameFromRoute(route);
-  if (routeName !== "AllChatsPage") {
-    return "none";
+  if (routeName === "AllChatsPage" || !routeName) {
+    return "flex";
   }
-  return "flex";
+  return "none";
 };
 
 export default function App() {

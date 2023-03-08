@@ -3,14 +3,16 @@ import { Platform, StatusBar, View, type ViewProps } from "react-native";
 
 interface Props extends ViewProps {}
 
-const SafeArea: React.FC<Props> = ({ children }) => {
+const SafeArea: React.FC<Props> = ({ children, style }) => {
   return (
     <View
-      style={{
-        paddingTop:
-          Platform.OS === "android" ? StatusBar.currentHeight + 20 : 0,
-      }}
-      className="flex-1 bg-white dark:bg-black"
+      style={[
+        style,
+        {
+          paddingTop:
+            Platform.OS === "android" ? StatusBar.currentHeight + 20 : 0,
+        },
+      ]}
     >
       {children}
     </View>

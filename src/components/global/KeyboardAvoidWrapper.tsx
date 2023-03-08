@@ -2,19 +2,19 @@
 import React from "react";
 
 //React native
-import { KeyboardAvoidingView, ScrollView, type ScrollViewProps } from "react-native";
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  type ScrollViewProps,
+} from "react-native";
 
 interface KeyboardAvoidWrapperProp extends ScrollViewProps {
   children: React.ReactNode;
-  className?: string;
 }
 
-const KeyboardAvoidWrapper = ({
-  children,
-  className,
-}: KeyboardAvoidWrapperProp) => {
+const KeyboardAvoidWrapper = ({ children }: KeyboardAvoidWrapperProp) => {
   return (
-    <KeyboardAvoidingView className={`flex-1 ${className}`}>
+    <KeyboardAvoidingView className={`flex-1`}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}

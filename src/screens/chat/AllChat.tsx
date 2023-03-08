@@ -9,7 +9,7 @@ type Props = NativeStackScreenProps<ChatPageParamList, "AllChatsPage">;
 
 const AllChat: React.FC<Props> = ({ navigation }) => {
   return (
-    <SafeArea>
+    <SafeArea className="flex-1 bg-white dark:bg-black">
       <Button title="Call" onPress={() => navigation.navigate("CallPage")} />
       <Button
         title="SinglePage"

@@ -40,8 +40,13 @@ const Success: React.FC<Props> = ({ navigation, route }) => {
   }, []);
 
   return (
-    <SafeArea>
-      <ConfettiCannon size={1.5} duration={3000} timeout={1} ref={confettiRef} />
+    <SafeArea className="flex-1 bg-white dark:bg-black">
+      <ConfettiCannon
+        size={1.5}
+        duration={3000}
+        timeout={1}
+        ref={confettiRef}
+      />
       <View className="flex-1 py-7 flex items-center">
         <View className="flex-1 flex items-center justify-center gap-y-7">
           <View className="flex items-center justify-center gap-y-5">

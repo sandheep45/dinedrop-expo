@@ -39,7 +39,7 @@ const Bio = ({ navigation }: Props) => {
         <TextInput
           placeholderTextColor={colorScheme === "dark" ? "#fff" : "#a1a1aa"}
           className="w-full h-16 p-4 border border-gray-200 rounded-lg dark:bg-gray-800 dark:text-white dark:border-gray-800"
-          placeholder="Confirm password"
+          placeholder="Mobile Number"
         />
       </View>
     </SignUpLayout>

@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 //Screens
 import SignUp from "./SignUp";
-import Bio from "./Bio";
+import Bio from "../global/Bio";
 import Otp from "./Otp";
 import SetLocation from "./SetLocation";
 import Success from "../global/Success";

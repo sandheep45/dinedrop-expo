@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator<ChatPageParamList>();
 
 const ChatStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator >
       <Stack.Screen
         options={{ headerShown: false }}
         name="AllChatsPage"

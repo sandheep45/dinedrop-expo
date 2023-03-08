@@ -12,6 +12,8 @@ import Restraunts from "./Restraunts";
 import Notification from "./Notification";
 import Rating from "./Rating";
 import Voucher from "./Voucher";
+import RestrauntDetail from "./RestrauntDetail";
+import ProductDetail from "./ProductDetail";
 
 const Stack = createNativeStackNavigator<HomePageParamList>();
 
@@ -52,6 +54,16 @@ const HomeStack = () => {
         options={{ headerShown: false }}
         name="VoucherPage"
         component={Voucher}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="RestrauntDetail"
+        component={RestrauntDetail}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="ProductDetail"
+        component={ProductDetail}
       />
     </Stack.Navigator>
   );
