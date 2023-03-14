@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
   Text,
-  type ViewProps
+  type ViewProps,
 } from "react-native";
 
 //Expo
@@ -18,6 +18,7 @@ import SafeArea from "../global/SafeArea";
 
 //Svgs
 import BackArrowIcons from "../../../assets/svg/BackArrowIcons";
+import BackButton from "../global/BackButton";
 
 interface Props extends ViewProps {
   onPressPrev?: (e?: GestureResponderEvent) => void;
@@ -37,7 +38,7 @@ interface Props extends ViewProps {
 
 const SignUpLayout: React.FC<Props> = ({
   children,
-  onPressPrev: onPress,
+  onPressPrev,
   heading,
   info,
   onPressNext,
@@ -48,12 +49,7 @@ const SignUpLayout: React.FC<Props> = ({
     <KeyboardAvoidWrapper>
       <SafeArea className="flex-1 bg-white dark:bg-black">
         <View className="flex-1 flex gap-y-5 px-4">
-          <TouchableOpacity
-            onPress={onPress}
-            className="rounded-md bg-gray-200 w-10 h-10 flex items-center justify-center"
-          >
-            <BackArrowIcons />
-          </TouchableOpacity>
+          <BackButton onPress={onPressPrev} />
           <View className="flex-1 flex gap-3">
             <Text className="text-2xl font-black dark:text-white">
               {heading}

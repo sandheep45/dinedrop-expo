@@ -1,22 +1,23 @@
 import React from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  Image,
-} from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { HomePageParamList } from "../../../types/navigator";
-import HomeLayout from "../../components/layout/HomeLayout";
-import shadowStyles from "../../styles/shadow";
-import NotificationIcon from "../../../assets/svg/NotificationIcon";
-import { AntDesign } from "@expo/vector-icons";
-import FilterIcon from "../../../assets/svg/FilterIcon";
-import BackArrowIcons from "../../../assets/svg/BackArrowIcons";
-import { FontAwesome } from "@expo/vector-icons";
+
+// React Native
+import { Text, View, Image } from "react-native";
+
+// Expo
 import { useAssets } from "expo-asset";
+
+// Custom Components
+import HomeLayout from "../../components/layout/HomeLayout";
+
+//Custom Styles
+import shadowStyles from "../../styles/shadow";
+
+//SVGs and Icons
+import { FontAwesome } from "@expo/vector-icons";
+
+// Types
+import type { HomePageParamList } from "../../../types/navigator";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 type Props = NativeStackScreenProps<HomePageParamList, "MenuPage">;
 

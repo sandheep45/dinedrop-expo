@@ -1,4 +1,6 @@
 import React from "react";
+
+//React Native
 import {
   useColorScheme,
   ImageBackground,
@@ -10,14 +12,22 @@ import {
   TextInput,
   GestureResponderEvent,
 } from "react-native";
+
+//Expo
 import { useAssets } from "expo-asset";
-import SafeArea from "../global/SafeArea";
 import { LinearGradient } from "expo-linear-gradient";
-import NotificationIcon from "../../../assets/svg/NotificationIcon";
+
+//Custom components
+import SafeArea from "../global/SafeArea";
+import BackButton from "../global/BackButton";
+
+//Custom style
 import shadowStyles from "../../styles/shadow";
-import FilterIcon from "../../../assets/svg/FilterIcon";
+
+//SVGs and Icons
 import { AntDesign } from "@expo/vector-icons";
-import BackArrowIcons from "../../../assets/svg/BackArrowIcons";
+import NotificationIcon from "../../../assets/svg/NotificationIcon";
+import FilterIcon from "../../../assets/svg/FilterIcon";
 
 interface Props extends ViewProps {
   backButtonAction?: (e?: GestureResponderEvent) => void;
@@ -56,14 +66,7 @@ const HomeLayout: React.FC<Props> = ({
             <ScrollView className="flex-1 flex space-y-4 w-full px-6">
               {/* Heading and Notification icon */}
               <View className="flex flex-row justify-between items-center px-2">
-                {showBackButton && (
-                  <TouchableOpacity
-                    onPress={() => backButtonAction()}
-                    className="rounded-md bg-gray-200 w-10 h-10 flex items-center justify-center"
-                  >
-                    <BackArrowIcons />
-                  </TouchableOpacity>
-                )}
+                {showBackButton && <BackButton onPress={backButtonAction} />}
                 <Text
                   className={`text-3xl font-black w-7/12 dark:text-white ${
                     showBackButton && "text-center"

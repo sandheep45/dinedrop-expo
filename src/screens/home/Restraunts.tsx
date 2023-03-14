@@ -1,22 +1,22 @@
 import React from "react";
-import {
-  Text,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  TextInput,
-  Image,
-} from "react-native";
 
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { HomePageParamList } from "../../../types/navigator";
-import HomeLayout from "../../components/layout/HomeLayout";
-import NotificationIcon from "../../../assets/svg/NotificationIcon";
-import FilterIcon from "../../../assets/svg/FilterIcon";
-import { AntDesign } from "@expo/vector-icons";
-import shadowStyles from "../../styles/shadow";
-import BackArrowIcons from "../../../assets/svg/BackArrowIcons";
+//React Native
+import { Text, View, Image } from "react-native";
+
+//Expo
 import { useAssets } from "expo-asset";
+
+//React Navigation
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+
+//Custom components
+import HomeLayout from "../../components/layout/HomeLayout";
+
+//Custom styles
+import shadowStyles from "../../styles/shadow";
+
+//Types
+import type { HomePageParamList } from "../../../types/navigator";
 
 type Props = NativeStackScreenProps<HomePageParamList, "RestrauntPage">;
 

@@ -1,21 +1,27 @@
 import React from "react";
+
+//React Native
 import {
   Text,
   View,
   TouchableOpacity,
-  TextInput,
   ImageBackground,
   Image,
   ScrollView,
 } from "react-native";
+
+// Expo
 import { useAssets } from "expo-asset";
+
+// Custom Components
+import HomeLayout from "../../components/layout/HomeLayout";
+
+// Custom style
+import shadowStyles from "../../styles/shadow";
+
+//Types
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { HomePageParamList } from "../../../types/navigator";
-import HomeLayout from "../../components/layout/HomeLayout";
-import NotificationIcon from "../../../assets/svg/NotificationIcon";
-import { AntDesign } from "@expo/vector-icons";
-import FilterIcon from "../../../assets/svg/FilterIcon";
-import shadowStyles from "../../styles/shadow";
 
 type Props = NativeStackScreenProps<HomePageParamList, "HomePage">;
 
