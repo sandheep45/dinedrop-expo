@@ -115,7 +115,7 @@ export default function App() {
             />
           </AuthTab.Navigator>
         ) : (
-          <HomeTab.Navigator>
+          <HomeTab.Navigator initialRouteName="ChatStack">
             <HomeTab.Screen
               name="HomeStack"
               options={{

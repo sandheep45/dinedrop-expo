@@ -1,21 +1,46 @@
 import React from "react";
-import { useColorScheme, ImageBackground, View, ViewProps } from "react-native";
+import {
+  useColorScheme,
+  ImageBackground,
+  View,
+  ViewProps,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  GestureResponderEvent,
+} from "react-native";
 import { useAssets } from "expo-asset";
 import SafeArea from "../global/SafeArea";
 import { LinearGradient } from "expo-linear-gradient";
+import NotificationIcon from "../../../assets/svg/NotificationIcon";
+import shadowStyles from "../../styles/shadow";
+import FilterIcon from "../../../assets/svg/FilterIcon";
+import { AntDesign } from "@expo/vector-icons";
+import BackArrowIcons from "../../../assets/svg/BackArrowIcons";
 
-interface Props extends ViewProps {}
+interface Props extends ViewProps {
+  backButtonAction?: (e?: GestureResponderEvent) => void;
+  showBackButton?: boolean;
+}
 
-const HomeLayout: React.FC<Props> = ({ children, style }) => {
+const HomeLayout: React.FC<Props> = ({
+  children,
+  style,
+  backButtonAction,
+  showBackButton,
+}) => {
   const colorScheme = useColorScheme();
-  const [assets] = useAssets([require("../../../assets/images/FullScreenPattern.png")]);
+  const [assets] = useAssets([
+    require("../../../assets/images/FullScreenPattern.png"),
+  ]);
 
   if (!assets) return null;
 
   return (
     <View className="flex-1">
       <ImageBackground
-      className="flex-1"
+        className="flex-1"
         style={{ height: assets[0].height }}
         source={{ uri: assets[0].localUri }}
       >
@@ -25,9 +50,65 @@ const HomeLayout: React.FC<Props> = ({ children, style }) => {
               ? ["rgba(225, 225, 225, 0)", "#FFFFFF"]
               : ["rgba(0, 0, 0, 0)", "#000000"]
           }
-          className="h-full w-full"
+          className="h-full w-full flex items-center justify-center"
         >
-          <SafeArea style={style} className="flex-1">{children}</SafeArea>
+          <SafeArea style={style} className="flex-1">
+            <ScrollView className="flex-1 flex space-y-4 w-full px-6">
+              {/* Heading and Notification icon */}
+              <View className="flex flex-row justify-between items-center px-2">
+                {showBackButton && (
+                  <TouchableOpacity
+                    onPress={() => backButtonAction()}
+                    className="rounded-md bg-gray-200 w-10 h-10 flex items-center justify-center"
+                  >
+                    <BackArrowIcons />
+                  </TouchableOpacity>
+                )}
+                <Text
+                  className={`text-3xl font-black w-7/12 dark:text-white ${
+                    showBackButton && "text-center"
+                  }`}
+                >
+                  Find Your Favorite Food
+                </Text>
+
+                <TouchableOpacity
+                  style={[shadowStyles.shadow7]}
+                  className="flex items-center justify-center p-4 rounded-full bg-white"
+                >
+                  <NotificationIcon />
+                </TouchableOpacity>
+              </View>
+
+              {/* search bar and filter icon */}
+              <View className="flex flex-row w-full space-x-2">
+                <View className="relative flex-1">
+                  <AntDesign
+                    style={{
+                      position: "absolute",
+                      top: 18,
+                      left: 10,
+                      zIndex: 1,
+                    }}
+                    name="search1"
+                    size={24}
+                    color="#DA6317"
+                  />
+                  <TextInput
+                    placeholderTextColor={"#DA6317"}
+                    className=" py-4 px-12 rounded-lg bg-gray-200 dark:bg-[#252525]"
+                    placeholder="What do you want to order?"
+                  />
+                </View>
+
+                <View className="flex items-center justify-center p-4 rounded-lg bg-gray-200 dark:bg-[#252525]">
+                  <FilterIcon />
+                </View>
+              </View>
+
+              {children}
+            </ScrollView>
+          </SafeArea>
         </LinearGradient>
       </ImageBackground>
     </View>
