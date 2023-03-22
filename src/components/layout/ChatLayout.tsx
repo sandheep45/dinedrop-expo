@@ -33,12 +33,10 @@ const ChatLayout: React.FC<Props> = ({ children, style }) => {
               ? ["rgba(225, 225, 225, 0)", "#FFFFFF"]
               : ["rgba(0, 0, 0, 0)", "#000000"]
           }
-          className="h-full w-full flex items-center justify-center"
+          className="flex-1"
         >
           <SafeArea style={style} className="flex-1">
-            <ScrollView className="flex-1 flex space-y-4 w-full px-6">
-              {children}
-            </ScrollView>
+            <ScrollView className="flex-1">{children}</ScrollView>
           </SafeArea>
         </LinearGradient>
       </ImageBackground>

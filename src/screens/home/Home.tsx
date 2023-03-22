@@ -13,6 +13,9 @@ import {
 // Expo
 import { useAssets } from "expo-asset";
 
+//Apollo graphql
+import { useQuery } from "@apollo/client";
+
 // Custom Components
 import HomeLayout from "../../components/layout/HomeLayout";
 
@@ -22,8 +25,17 @@ import shadowStyles from "../../styles/shadow";
 //Types
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { HomePageParamList } from "../../../types/navigator";
+import { gql } from "../../__generated__";
 
 type Props = NativeStackScreenProps<HomePageParamList, "HomePage">;
+
+const GET_USER = gql(`
+  query GetUser {
+    Users {
+      email
+    }
+  }
+`);
 
 const Home: React.FC<Props> = ({ navigation }) => {
   const [assets] = useAssets([
@@ -36,6 +48,9 @@ const Home: React.FC<Props> = ({ navigation }) => {
     require("../../../assets/images/Restaurant5Image.png"),
     require("../../../assets/images/Restaurant6Image.png"),
   ]);
+  const { data, loading } = useQuery(GET_USER, {
+    onCompleted: console.log,
+  });
 
   if (!assets) return null;
 

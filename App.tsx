@@ -11,13 +11,23 @@ import {
   NavigationContainer,
   DefaultTheme,
   DarkTheme,
+  getFocusedRouteNameFromRoute,
   type RouteProp,
 } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 //Expo
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+
+//Apollo graphql
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+} from "@apollo/client";
+
+//GraphQL
 
 //Screens
 import Onboarding from "./src/screens/Onboarding";
@@ -39,6 +49,7 @@ import CartIcon from "./assets/svg/CartIcon";
 import ChatIcon from "./assets/svg/ChatIcon";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+
 const AuthTab = createBottomTabNavigator<RootStackParamList>();
 const HomeTab = createBottomTabNavigator<MainPageParamList>();
 
@@ -52,9 +63,15 @@ const getRouteName = (
   return "none";
 };
 
+// Initialize Apollo Client
+const client = new ApolloClient({
+  uri: "https://28e9-2401-4900-60d6-7f34-dd5e-d1c2-e927-ceab.in.ngrok.io/graphql",
+  cache: new InMemoryCache(),
+});
+
 export default function App() {
   const [isAppFirstLaunched, setIsAppFirstLaunched] = useState(false);
-  const isAuthenticated = !false;
+  const isAuthenticated = true;
   const colorTheme = useColorScheme();
 
   useEffect(() => {
@@ -76,86 +93,88 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ExpoStatusBar style="auto" />
-      <NavigationContainer
-        theme={colorTheme === "dark" ? DarkTheme : DefaultTheme}
-      >
-        {!isAuthenticated ? (
-          <AuthTab.Navigator>
-            <AuthTab.Screen
-              name="SignInStack"
-              options={{
-                headerShown: false,
-                tabBarLabel: "SignIn",
-                tabBarIcon: () => (
-                  <FontAwesome
-                    name="sign-in"
-                    size={24}
-                    color={colorTheme === "dark" ? "#ffffff" : "#000000"}
-                  />
-                ),
-              }}
-              component={SignInStack}
-            />
-            <AuthTab.Screen
-              name="SignUpStack"
-              options={{
-                headerShown: false,
-                tabBarLabel: "SignUp",
-                tabBarIcon: (props) => (
-                  <AntDesign
-                    name="addusergroup"
-                    size={24}
-                    color={colorTheme === "dark" ? "#ffffff" : "#000000"}
-                  />
-                ),
-              }}
-              component={SignUpStack}
-            />
-          </AuthTab.Navigator>
-        ) : (
-          <HomeTab.Navigator initialRouteName="ChatStack">
-            <HomeTab.Screen
-              name="HomeStack"
-              options={{
-                headerShown: false,
-                tabBarLabel: "Home",
-                tabBarIcon: () => <HomeIcon />,
-              }}
-              component={HomeStack}
-            />
-            <HomeTab.Screen
-              name="ProfileStack"
-              options={{
-                headerShown: false,
-                tabBarLabel: "Profile",
-                tabBarIcon: (props) => <ProfileIcon />,
-              }}
-              component={ProfileStack}
-            />
-            <HomeTab.Screen
-              name="CartStack"
-              options={{
-                headerShown: false,
-                tabBarLabel: "Cart",
-                tabBarIcon: (props) => <CartIcon />,
-              }}
-              component={CartStack}
-            />
-            <HomeTab.Screen
-              name="ChatStack"
-              options={({ route }) => ({
-                headerShown: false,
-                tabBarLabel: "Chat",
-                tabBarIcon: (props) => <ChatIcon />,
-                tabBarStyle: { display: getRouteName(route) },
-              })}
-              component={ChatStack}
-            />
-          </HomeTab.Navigator>
-        )}
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <ApolloProvider client={client}>
+      <SafeAreaProvider>
+        <ExpoStatusBar style="auto" />
+        <NavigationContainer
+          theme={colorTheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          {!isAuthenticated ? (
+            <AuthTab.Navigator>
+              <AuthTab.Screen
+                name="SignInStack"
+                options={{
+                  headerShown: false,
+                  tabBarLabel: "SignIn",
+                  tabBarIcon: () => (
+                    <FontAwesome
+                      name="sign-in"
+                      size={24}
+                      color={colorTheme === "dark" ? "#ffffff" : "#000000"}
+                    />
+                  ),
+                }}
+                component={SignInStack}
+              />
+              <AuthTab.Screen
+                name="SignUpStack"
+                options={{
+                  headerShown: false,
+                  tabBarLabel: "SignUp",
+                  tabBarIcon: (props) => (
+                    <AntDesign
+                      name="addusergroup"
+                      size={24}
+                      color={colorTheme === "dark" ? "#ffffff" : "#000000"}
+                    />
+                  ),
+                }}
+                component={SignUpStack}
+              />
+            </AuthTab.Navigator>
+          ) : (
+            <HomeTab.Navigator>
+              <HomeTab.Screen
+                name="HomeStack"
+                options={{
+                  headerShown: false,
+                  tabBarLabel: "Home",
+                  tabBarIcon: () => <HomeIcon />,
+                }}
+                component={HomeStack}
+              />
+              <HomeTab.Screen
+                name="ProfileStack"
+                options={{
+                  headerShown: false,
+                  tabBarLabel: "Profile",
+                  tabBarIcon: (props) => <ProfileIcon />,
+                }}
+                component={ProfileStack}
+              />
+              <HomeTab.Screen
+                name="CartStack"
+                options={{
+                  headerShown: false,
+                  tabBarLabel: "Cart",
+                  tabBarIcon: (props) => <CartIcon />,
+                }}
+                component={CartStack}
+              />
+              <HomeTab.Screen
+                name="ChatStack"
+                options={({ route }) => ({
+                  headerShown: false,
+                  tabBarLabel: "Chat",
+                  tabBarIcon: (props) => <ChatIcon />,
+                  tabBarStyle: { display: getRouteName(route) },
+                })}
+                component={ChatStack}
+              />
+            </HomeTab.Navigator>
+          )}
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </ApolloProvider>
   );
 }
