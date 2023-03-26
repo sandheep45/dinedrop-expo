@@ -24,7 +24,6 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  useQuery,
 } from "@apollo/client";
 
 //GraphQL
@@ -48,7 +47,7 @@ import ProfileIcon from "./assets/svg/ProfileIcon";
 import CartIcon from "./assets/svg/CartIcon";
 import ChatIcon from "./assets/svg/ChatIcon";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
+import { LOCAL_SERVER_URL } from "./constant";
 
 const AuthTab = createBottomTabNavigator<RootStackParamList>();
 const HomeTab = createBottomTabNavigator<MainPageParamList>();
@@ -65,24 +64,33 @@ const getRouteName = (
 
 // Initialize Apollo Client
 const client = new ApolloClient({
-  uri: "https://28e9-2401-4900-60d6-7f34-dd5e-d1c2-e927-ceab.in.ngrok.io/graphql",
-  cache: new InMemoryCache(),
+  uri: LOCAL_SERVER_URL,
+  cache: new InMemoryCache({
+    addTypename: false,
+  }),
 });
 
 export default function App() {
   const [isAppFirstLaunched, setIsAppFirstLaunched] = useState(false);
-  const isAuthenticated = true;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const colorTheme = useColorScheme();
 
   useEffect(() => {
     const getToken = async () => {
-      const token = await AsyncStorage.getItem("isAppFirstLaunched");
-      if (token === null) {
+      const isAppFirstLaunchedToken = await AsyncStorage.getItem(
+        "isAppFirstLaunched"
+      );
+      const isUserAuthenticatedToken = await AsyncStorage.getItem("TOKEN");
+      if (isAppFirstLaunchedToken === null) {
         setIsAppFirstLaunched(true);
         AsyncStorage.setItem("isAppFirstLaunched", "true");
-      } else if (token === "true") {
+      } else if (isAppFirstLaunchedToken === "true") {
         AsyncStorage.setItem("isAppFirstLaunched", "false");
         setIsAppFirstLaunched(false);
+      }
+
+      if (isUserAuthenticatedToken) {
+        setIsAuthenticated(true);
       }
     };
     getToken();

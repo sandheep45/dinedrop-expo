@@ -2,7 +2,14 @@
 import React from "react";
 
 //React native
-import { Text, TextInput, View, TouchableOpacity, useColorScheme } from "react-native";
+import {
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  useColorScheme,
+  GestureResponderEvent,
+} from "react-native";
 
 //Expo
 import { useFonts } from "expo-font";
@@ -16,19 +23,57 @@ import KeyboardAvoidWrapper from "../../components/global/KeyboardAvoidWrapper";
 import FacebookLogo from "../../../assets/svg/FacebookLogo";
 import GoogleLogo from "../../../assets/svg/GoogleLogo";
 
+//Async storage
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 //types
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { SignInParamList } from "../../../types/navigator";
 
+//Custom styles
+import shadowStyles from "../../styles/shadow";
+
+//GraphQL
+import { gql } from "../../__generated__";
+import { useMutation } from "@apollo/client";
+
 type Props = NativeStackScreenProps<SignInParamList, "SignInPage">;
 
+const LOGIN = gql(`
+    mutation login($input: LoginUserInput!) {
+      login(loginUserInput: $input) {
+        user {
+          username
+          password
+        }
+        access_token
+      }
+    }
+  `);
+
 const SignIn: React.FC<Props> = ({ navigation }) => {
-  const colorScheme = useColorScheme()
+  const [login] = useMutation(LOGIN);
+  const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({
     "BentonSans Bold": require("../../../assets/fonts/BentonSans/BentonSansBold.otf"),
   });
 
   if (!fontsLoaded) return null;
+
+  const handleSubmit = async (e: GestureResponderEvent) => {
+    const { data } = await login({
+      variables: {
+        input: {
+          username: "Sussan",
+          password: "12345",
+        },
+      },
+    });
+
+    if (data) {
+      AsyncStorage.setItem("TOKEN", data.login.access_token);
+    }
+  };
 
   return (
     <KeyboardAvoidWrapper>
@@ -43,13 +88,17 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
           <View className="h-full flex items-center justify-center gap-y-9 w-full px-5 mt-0'">
             <View className="flex items-center justify-center w-full gap-y-3">
               <TextInput
-                placeholderTextColor={colorScheme === "dark" ? "#fff" : "#a1a1aa"}
+                placeholderTextColor={
+                  colorScheme === "dark" ? "#fff" : "#a1a1aa"
+                }
                 className="w-full h-16 py-4 px-3 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-800 dark:text-white"
                 placeholder="Email"
               />
 
               <TextInput
-                placeholderTextColor={colorScheme === "dark" ? "#fff" : "#a1a1aa"}
+                placeholderTextColor={
+                  colorScheme === "dark" ? "#fff" : "#a1a1aa"
+                }
                 className="w-full h-16 py-4 px-3 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-800 dark:text-white"
                 placeholder="Password"
               />
@@ -61,12 +110,18 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
 
             <View className="flex items-center justify-center w-full space-y-5">
               <View className="flex flex-row justify-center items-center space-x-10">
-                <TouchableOpacity className="flex bg-gray-100 flex-row justify-center items-center space-x-3 px-8 py-4 rounded-lg dark:bg-gray-800">
+                <TouchableOpacity
+                  style={shadowStyles.shadow3}
+                  className="flex bg-white flex-row justify-center items-center space-x-3 px-8 py-4 rounded-lg dark:bg-gray-800"
+                >
                   <FacebookLogo />
                   <Text className="dark:text-white text-lg">Facebook</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity className="flex bg-gray-100 flex-row justify-center items-center space-x-3 px-8 py-4 rounded-lg dark:bg-gray-800">
+                <TouchableOpacity
+                  style={shadowStyles.shadow3}
+                  className="flex bg-white flex-row justify-center items-center space-x-3 px-8 py-4 rounded-lg dark:bg-gray-800"
+                >
                   <GoogleLogo />
                   <Text className="dark:text-white text-lg">Google</Text>
                 </TouchableOpacity>
@@ -81,7 +136,7 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity onPress={() => alert("pressed")}>
+            <TouchableOpacity onPress={handleSubmit}>
               <LinearGradient
                 colors={["#53E88B", "#15BE77"]}
                 start={{ x: 0, y: 1 }}

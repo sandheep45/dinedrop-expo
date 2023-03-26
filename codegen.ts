@@ -1,8 +1,17 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
+import { LOCAL_SERVER_URL } from "./constant";
 
 const config: CodegenConfig = {
-  schema:
-    "https://28e9-2401-4900-60d6-7f34-dd5e-d1c2-e927-ceab.in.ngrok.io/graphql",
+  schema: [
+    {
+      [LOCAL_SERVER_URL]: {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJTYW4iLCJ1c2VybmFtZSI6IlN1c3NhbiIsImlhdCI6MTY3OTc2NjUyMH0.0CsTlTykpHAky57IsF_KNv5JIwmFdBy5XzRa2GdiPfA",
+        },
+      },
+    },
+  ],
   documents: ["src/**/*.tsx"],
   generates: {
     "./src/__generated__/": {
