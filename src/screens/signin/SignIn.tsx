@@ -36,6 +36,7 @@ import shadowStyles from "../../styles/shadow";
 //GraphQL
 import { gql } from "../../__generated__";
 import { useMutation } from "@apollo/client";
+import { useAuthContext } from "../../context/AuthContextProvider";
 
 type Props = NativeStackScreenProps<SignInParamList, "SignInPage">;
 
@@ -52,7 +53,8 @@ const LOGIN = gql(`
   `);
 
 const SignIn: React.FC<Props> = ({ navigation }) => {
-  const [login] = useMutation(LOGIN);
+  const [login, { loading }] = useMutation(LOGIN);
+  const { setIsAuthenticated } = useAuthContext();
   const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({
     "BentonSans Bold": require("../../../assets/fonts/BentonSans/BentonSansBold.otf"),
@@ -71,7 +73,8 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
     });
 
     if (data) {
-      AsyncStorage.setItem("TOKEN", data.login.access_token);
+      await AsyncStorage.setItem("TOKEN", data.login.access_token);
+      setIsAuthenticated(true);
     }
   };
 

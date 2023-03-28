@@ -1,2 +1,2 @@
 export const LOCAL_SERVER_URL =
-  "https://60dd-2401-4900-60ee-1151-2cd9-1d2a-ad67-b280.in.ngrok.io/graphql";
+  "https://44f7-2401-4900-60da-bccf-2c97-31c-e230-6b45.in.ngrok.io/graphql";

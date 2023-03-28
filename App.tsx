@@ -20,11 +20,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
 //Apollo graphql
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-} from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 //GraphQL
 
@@ -48,6 +44,7 @@ import CartIcon from "./assets/svg/CartIcon";
 import ChatIcon from "./assets/svg/ChatIcon";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { LOCAL_SERVER_URL } from "./constant";
+import { useAuthContext } from "./src/context/AuthContextProvider";
 
 const AuthTab = createBottomTabNavigator<RootStackParamList>();
 const HomeTab = createBottomTabNavigator<MainPageParamList>();
@@ -72,7 +69,7 @@ const client = new ApolloClient({
 
 export default function App() {
   const [isAppFirstLaunched, setIsAppFirstLaunched] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, setIsAuthenticated } = useAuthContext();
   const colorTheme = useColorScheme();
 
   useEffect(() => {
@@ -94,7 +91,7 @@ export default function App() {
       }
     };
     getToken();
-  }, []);
+  }, [isAuthenticated]);
 
   if (isAppFirstLaunched) {
     return <Onboarding />;

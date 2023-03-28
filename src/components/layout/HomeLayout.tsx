@@ -28,6 +28,8 @@ import shadowStyles from "../../styles/shadow";
 import { AntDesign } from "@expo/vector-icons";
 import NotificationIcon from "../../../assets/svg/NotificationIcon";
 import FilterIcon from "../../../assets/svg/FilterIcon";
+import { useAuthContext } from "../../context/AuthContextProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Props extends ViewProps {
   backButtonAction?: (e?: GestureResponderEvent) => void;
@@ -41,9 +43,15 @@ const HomeLayout: React.FC<Props> = ({
   showBackButton,
 }) => {
   const colorScheme = useColorScheme();
+  const { setIsAuthenticated } = useAuthContext();
   const [assets] = useAssets([
     require("../../../assets/images/FullScreenPattern.png"),
   ]);
+
+  const logoutHandler = async () => {
+    await AsyncStorage.removeItem("TOKEN");
+    setIsAuthenticated(false);
+  };
 
   if (!assets) return null;
 
@@ -76,6 +84,7 @@ const HomeLayout: React.FC<Props> = ({
                 </Text>
 
                 <TouchableOpacity
+                  onPress={logoutHandler}
                   style={[shadowStyles.shadow7]}
                   className="flex items-center justify-center p-4 rounded-full bg-white"
                 >
