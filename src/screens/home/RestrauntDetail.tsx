@@ -28,7 +28,7 @@ const RestrauntDetail: React.FC<Props> = ({ navigation }) => {
         title="Restarunt"
         onPress={() => navigation.navigate("RestrauntPage")}
       />
-      <Text>RestrauntDetail</Text>
+      <Text className="dark:text-white">RestrauntDetail</Text>
     </SafeArea>
   );
 };

@@ -10,7 +10,7 @@ const SafeArea: React.FC<Props> = ({ children, style }) => {
         style,
         {
           paddingTop:
-            Platform.OS === "android" ? StatusBar.currentHeight + 20 : 0,
+            Platform.OS === "android" ? StatusBar.currentHeight + 35 : 0,
         },
       ]}
     >

@@ -1,7 +1,7 @@
 import React from "react";
 
 // React Native
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, useColorScheme } from "react-native";
 
 // Expo
 import { useAssets } from "expo-asset";
@@ -22,6 +22,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 type Props = NativeStackScreenProps<HomePageParamList, "MenuPage">;
 
 const Menu: React.FC<Props> = ({ navigation }) => {
+  const colorScheme = useColorScheme();
   const [assets] = useAssets([
     require("../../../assets/images/Menu1Photo.png"),
     require("../../../assets/images/Menu2Photo.png"),
@@ -44,7 +45,7 @@ const Menu: React.FC<Props> = ({ navigation }) => {
             <View
               style={shadowStyles.shadow3}
               key={item}
-              className="flex-1 flex flex-row space-x-4 bg-white items-center justify-between p-4 rounded-md"
+              className="flex-1 flex flex-row space-x-4 bg-white items-center justify-between p-4 rounded-md dark:bg-[#252525]"
             >
               <Image
                 source={{
@@ -54,15 +55,21 @@ const Menu: React.FC<Props> = ({ navigation }) => {
                 }}
               />
               <View className="flex-1">
-                <Text className="text-lg">Herbal Pancake</Text>
+                <Text className="text-lg dark:text-white">Herbal Pancake</Text>
                 <Text className="text-lg text-gray-300 font-thin">
                   Warung Herbal
                 </Text>
               </View>
 
               <View className="flex flex-row items-center">
-                <FontAwesome name="dollar" size={24} color="black" />
-                <Text className="text-2xl font-extrabold">7</Text>
+                <FontAwesome
+                  name="dollar"
+                  size={24}
+                  color={colorScheme === "dark" ? "white" : "black"}
+                />
+                <Text className="text-2xl font-extrabold dark:text-white">
+                  7
+                </Text>
               </View>
             </View>
           ))}

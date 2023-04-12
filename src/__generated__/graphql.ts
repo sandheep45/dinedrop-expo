@@ -19,7 +19,7 @@ export type CreateReferenceInput = {
   exampleField: Scalars['Int'];
 };
 
-export type CreateUserDto = {
+export type CreateUser = {
   email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
@@ -30,8 +30,13 @@ export type CreateUserDto = {
 
 export type LoginResponse = {
   __typename?: 'LoginResponse';
+  _id?: Maybe<Scalars['ID']>;
   access_token: Scalars['String'];
-  user: User;
+  email?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  mobileNumber?: Maybe<Scalars['Int']>;
+  username?: Maybe<Scalars['String']>;
 };
 
 export type LoginUserInput = {
@@ -43,8 +48,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   createReference: Reference;
   createUser: User;
+  googleLogin: Scalars['Boolean'];
   login: LoginResponse;
   removeReference: Reference;
+  signup: User;
   updateReference: Reference;
 };
 
@@ -55,7 +62,7 @@ export type MutationCreateReferenceArgs = {
 
 
 export type MutationCreateUserArgs = {
-  createUserDto: CreateUserDto;
+  createUserDto: CreateUser;
 };
 
 
@@ -66,6 +73,11 @@ export type MutationLoginArgs = {
 
 export type MutationRemoveReferenceArgs = {
   id: Scalars['Int'];
+};
+
+
+export type MutationSignupArgs = {
+  signupInput: CreateUser;
 };
 
 
@@ -106,6 +118,7 @@ export type UpdateReferenceInput = {
 
 export type User = {
   __typename?: 'User';
+  _id?: Maybe<Scalars['ID']>;
   email?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
@@ -119,8 +132,14 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', access_token: string, user: { __typename?: 'User', username?: string | null, password?: string | null } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', access_token: string } };
+
+export type GoogleSignInMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"loginUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"password"}}]}},{"kind":"Field","name":{"kind":"Name","value":"access_token"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
+export type GoogleSignInMutation = { __typename?: 'Mutation', googleLogin: boolean };
+
+
+export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"loginUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
+export const GoogleSignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"googleSignIn"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"googleLogin"}}]}}]} as unknown as DocumentNode<GoogleSignInMutation, GoogleSignInMutationVariables>;
 /** All built-in and custom scalars, mapped to their actual values */

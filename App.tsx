@@ -34,7 +34,7 @@ import CartStack from "./src/screens/cart";
 import ChatStack from "./src/screens/chat";
 
 //Types
-import { MainPageParamList, RootStackParamList } from "./types/navigator";
+import { MainPageParamList, AuthStackParamList } from "./types/navigator";
 
 //Icons
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
@@ -46,7 +46,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { LOCAL_SERVER_URL } from "./constant";
 import { useAuthContext } from "./src/context/AuthContextProvider";
 
-const AuthTab = createBottomTabNavigator<RootStackParamList>();
+const AuthTab = createBottomTabNavigator<AuthStackParamList>();
 const HomeTab = createBottomTabNavigator<MainPageParamList>();
 
 const getRouteName = (

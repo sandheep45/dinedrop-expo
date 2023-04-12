@@ -30,6 +30,7 @@ import NotificationIcon from "../../../assets/svg/NotificationIcon";
 import FilterIcon from "../../../assets/svg/FilterIcon";
 import { useAuthContext } from "../../context/AuthContextProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FilterIconDark from "../../../assets/svg/FilterIconDark";
 
 interface Props extends ViewProps {
   backButtonAction?: (e?: GestureResponderEvent) => void;
@@ -84,7 +85,7 @@ const HomeLayout: React.FC<Props> = ({
                 </Text>
 
                 <TouchableOpacity
-                  onPress={logoutHandler}
+                  onPress={() => logoutHandler()}
                   style={[shadowStyles.shadow7]}
                   className="flex items-center justify-center p-4 rounded-full bg-white"
                 >
@@ -114,7 +115,7 @@ const HomeLayout: React.FC<Props> = ({
                 </View>
 
                 <View className="flex items-center justify-center p-4 rounded-lg bg-gray-200 dark:bg-[#252525]">
-                  <FilterIcon />
+                  {colorScheme === "dark" ? <FilterIconDark /> : <FilterIcon />}
                 </View>
               </View>
 

@@ -1,5 +1,4 @@
-export type RootStackParamList = {
-  MainStack: undefined;
+export type AuthStackParamList = {
   SignInStack: undefined;
   SignUpStack: undefined;
 };
@@ -18,10 +17,24 @@ export type SignInParamList = {
   SuccessPage: SuccessPage;
 };
 
+type BioPage = {
+  username: string;
+  email: string;
+  password: string;
+  keepSignedIn: boolean;
+  emailForAds: boolean;
+};
+
+type UploadImagePage = {
+  firstName: string;
+  lastName: string;
+  mobileNumber: string;
+};
+
 export type SignUpParamList = {
   SignUpPage: undefined;
-  BioPage: undefined;
-  UploadImagePage: undefined;
+  BioPage: BioPage;
+  UploadImagePage: UploadImagePage & BioPage;
   SetLocationPage: undefined;
   OtpPage: undefined;
   SuccessPage: SuccessPage;

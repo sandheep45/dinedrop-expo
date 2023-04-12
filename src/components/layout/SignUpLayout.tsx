@@ -17,7 +17,6 @@ import KeyboardAvoidWrapper from "../global/KeyboardAvoidWrapper";
 import SafeArea from "../global/SafeArea";
 
 //Svgs
-import BackArrowIcons from "../../../assets/svg/BackArrowIcons";
 import BackButton from "../global/BackButton";
 
 interface Props extends ViewProps {

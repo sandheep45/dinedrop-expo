@@ -26,15 +26,15 @@ const UploadImage: React.FC<Props> = ({ navigation }) => {
       onPressNext={() => navigation.navigate("SetLocationPage")}
       className="flex-1 flex items-center justify-between py-4"
     >
-      <View className="flex gap-y-10 py-9">
-        <View className="flex gap-y-8">
+      <View className="flex gap-y-5 py-9 w-full items-center">
+        <View className="flex gap-y-8 w-full dark:bg-[#252525] py-6 items-center rounded-lg">
           <GalleryIcon className="scale-[2]" />
-          <Text>From Gallery</Text>
+          <Text className="dark:text-white font-black text-lg">From Gallery</Text>
         </View>
 
-        <View className="flex gap-y-8">
+        <View className="flex gap-y-8 w-full dark:bg-[#252525] py-6 items-center rounded-lg">
           <CameraIcon className="scale-[2]" />
-          <Text>Take Photo</Text>
+          <Text className="dark:text-white font-black text-lg">Take Photo</Text>
         </View>
       </View>
     </SignUpLayout>

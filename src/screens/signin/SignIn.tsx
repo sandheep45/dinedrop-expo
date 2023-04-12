@@ -1,5 +1,5 @@
 //React
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 //React native
 import {
@@ -14,10 +14,14 @@ import {
 //Expo
 import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
 
 //components
 import AuthHero from "../../components/global/AuthHero";
 import KeyboardAvoidWrapper from "../../components/global/KeyboardAvoidWrapper";
+import Loader from "../../components/global/Loader";
+import { useAuthContext } from "../../context/AuthContextProvider";
 
 //Svg
 import FacebookLogo from "../../../assets/svg/FacebookLogo";
@@ -35,51 +39,121 @@ import shadowStyles from "../../styles/shadow";
 
 //GraphQL
 import { gql } from "../../__generated__";
-import { useMutation } from "@apollo/client";
-import { useAuthContext } from "../../context/AuthContextProvider";
+import { ApolloError, useMutation } from "@apollo/client";
 
 type Props = NativeStackScreenProps<SignInParamList, "SignInPage">;
 
 const LOGIN = gql(`
     mutation login($input: LoginUserInput!) {
       login(loginUserInput: $input) {
-        user {
-          username
-          password
-        }
         access_token
       }
     }
   `);
 
+WebBrowser.maybeCompleteAuthSession();
+
 const SignIn: React.FC<Props> = ({ navigation }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId:
+      "716798608893-lr0csd1s7ndb3jdeq57gro6370kd52fv.apps.googleusercontent.com",
+    androidClientId:
+      "716798608893-cvf244dc69tmifta7lpuo4saelhniqsm.apps.googleusercontent.com",
+    iosClientId:
+      "716798608893-84fkh9ag62iup2knc9b3p1vtimju9s8a.apps.googleusercontent.com",
+  });
   const [login, { loading }] = useMutation(LOGIN);
+  const [input, setInput] = useState({
+    username: "",
+    password: "",
+  });
   const { setIsAuthenticated } = useAuthContext();
   const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({
     "BentonSans Bold": require("../../../assets/fonts/BentonSans/BentonSansBold.otf"),
   });
 
+  useEffect(() => {
+    if (response?.type === "success") {
+      setToken(response.authentication.accessToken);
+      getUserInfo();
+    }
+  }, [response, token]);
+
+  const getUserInfo = async () => {
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const user = await response.json();
+      setUserInfo(user);
+    } catch (error) {
+      // Add your own error handler here
+    }
+  };
+
+  console.log("userInfo", userInfo, "token", token);
+
   if (!fontsLoaded) return null;
 
   const handleSubmit = async (e: GestureResponderEvent) => {
-    const { data } = await login({
-      variables: {
-        input: {
-          username: "Sussan",
-          password: "12345",
+    const { password, username } = input;
+    if (!username || !password) return;
+    try {
+      const { data } = await login({
+        variables: {
+          input: {
+            username,
+            password,
+          },
         },
-      },
-    });
+      });
 
-    if (data) {
-      await AsyncStorage.setItem("TOKEN", data.login.access_token);
-      setIsAuthenticated(true);
+      if (data) {
+        await AsyncStorage.setItem("TOKEN", data.login.access_token);
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        const { message, name } = error;
+        console.log("message", message, "name", name);
+      }
     }
+  };
+
+  // const handleGoogleSignIn = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const res = await fetch(
+  //       "https://0deb-110-227-111-23.ngrok-free.app/auth/google"
+  //     );
+  //     const data = await res.json();
+  //     console.log("data", data);
+  //   } catch (error) {
+  //     console.log("error", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const handleInputChange = (name: string, value: string) => {
+    setInput((currentInput) => ({
+      ...currentInput,
+      [name]: value,
+    }));
   };
 
   return (
     <KeyboardAvoidWrapper>
+      {(loading || isLoading) && <Loader />}
       <View className="flex gap-6 bg-white flex-1 py-10 dark:bg-black">
         <AuthHero />
 
@@ -91,14 +165,18 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
           <View className="h-full flex items-center justify-center gap-y-9 w-full px-5 mt-0'">
             <View className="flex items-center justify-center w-full gap-y-3">
               <TextInput
+                onChangeText={(value) => handleInputChange("username", value)}
+                value={input.username}
                 placeholderTextColor={
                   colorScheme === "dark" ? "#fff" : "#a1a1aa"
                 }
                 className="w-full h-16 py-4 px-3 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-800 dark:text-white"
-                placeholder="Email"
+                placeholder="Username"
               />
 
               <TextInput
+                onChangeText={(value) => handleInputChange("password", value)}
+                value={input.password}
                 placeholderTextColor={
                   colorScheme === "dark" ? "#fff" : "#a1a1aa"
                 }
@@ -122,6 +200,8 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                  disabled={!request}
+                  onPress={() => promptAsync()}
                   style={shadowStyles.shadow3}
                   className="flex bg-white flex-row justify-center items-center space-x-3 px-8 py-4 rounded-lg dark:bg-gray-800"
                 >

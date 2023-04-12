@@ -28,7 +28,7 @@ const ProductDetail: React.FC<Props> = ({ navigation }) => {
         title="Restarunt"
         onPress={() => navigation.navigate("RestrauntPage")}
       />
-      <Text>ProductDetail</Text>
+      <Text className="dark:text-white">ProductDetail</Text>
     </SafeArea>
   );
 };

@@ -8,6 +8,7 @@ import {
   ImageBackground,
   Image,
   ScrollView,
+  Pressable,
 } from "react-native";
 
 // Expo
@@ -22,6 +23,7 @@ import shadowStyles from "../../styles/shadow";
 //Types
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { HomePageParamList } from "../../../types/navigator";
+import Card from "../../components/Home/Card";
 
 type Props = NativeStackScreenProps<HomePageParamList, "HomePage">;
 
@@ -84,25 +86,12 @@ const Home: React.FC<Props> = ({ navigation }) => {
         {/* options */}
         <ScrollView className="flex flex-row" horizontal>
           {[1, 2, 3, 4, 5, 6].map((item) => (
-            <View
-              style={shadowStyles.shadow5}
-              className="flex space-y-2 bg-white p-4 rounded-lg m-3 dark:bg-[#252525]"
+            <Card
+              item={item}
+              assets={assets}
+              navigateTo={() => navigation.navigate("RestrauntDetail")}
               key={item}
-            >
-              <Image
-                source={{
-                  uri: assets[item + 1].localUri,
-                  height: 150,
-                  width: 150,
-                }}
-              />
-              <Text className="text-center text-2xl font-bold dark:text-white">
-                Vegan Metro
-              </Text>
-              <Text className="text-center text-lg font-thin text-gray-300">
-                12 Mins
-              </Text>
-            </View>
+            />
           ))}
         </ScrollView>
       </View>
@@ -122,25 +111,12 @@ const Home: React.FC<Props> = ({ navigation }) => {
         {/* options */}
         <ScrollView className="flex flex-row" horizontal>
           {[1, 2, 3, 4, 5, 6].map((item) => (
-            <View
-              style={shadowStyles.shadow5}
-              className="flex space-y-2 bg-white p-4 rounded-lg m-3 dark:bg-[#252525]"
+            <Card
+              item={item}
+              assets={assets}
+              navigateTo={() => navigation.navigate("ProductDetail")}
               key={item}
-            >
-              <Image
-                source={{
-                  uri: assets[item + 1].localUri,
-                  height: 150,
-                  width: 150,
-                }}
-              />
-              <Text className="text-center text-2xl font-bold dark:text-white">
-                Vegan Metro
-              </Text>
-              <Text className="text-center text-lg font-thin text-gray-300">
-                12 Mins
-              </Text>
-            </View>
+            />
           ))}
         </ScrollView>
       </View>
