@@ -16,6 +16,7 @@ import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
+import * as Facebook from "expo-auth-session/providers/facebook";
 
 //components
 import AuthHero from "../../components/global/AuthHero";
@@ -55,17 +56,20 @@ WebBrowser.maybeCompleteAuthSession();
 
 const SignIn: React.FC<Props> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [token, setToken] = useState("");
-  const [userInfo, setUserInfo] = useState(null);
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId:
-      "716798608893-lr0csd1s7ndb3jdeq57gro6370kd52fv.apps.googleusercontent.com",
-    androidClientId:
-      "716798608893-cvf244dc69tmifta7lpuo4saelhniqsm.apps.googleusercontent.com",
-    iosClientId:
-      "716798608893-84fkh9ag62iup2knc9b3p1vtimju9s8a.apps.googleusercontent.com",
-  });
+  const [googleRequest, googleResponse, googlePromptAsync] =
+    Google.useAuthRequest({
+      expoClientId:
+        "716798608893-lr0csd1s7ndb3jdeq57gro6370kd52fv.apps.googleusercontent.com",
+      androidClientId:
+        "716798608893-cvf244dc69tmifta7lpuo4saelhniqsm.apps.googleusercontent.com",
+      iosClientId:
+        "716798608893-84fkh9ag62iup2knc9b3p1vtimju9s8a.apps.googleusercontent.com",
+    });
+  const [facebookRequest, facebookResponse, facebookPromptAsync] =
+    Facebook.useAuthRequest({
+      clientId: "667150601837264",
+    });
   const [login, { loading }] = useMutation(LOGIN);
   const [input, setInput] = useState({
     username: "",
@@ -78,29 +82,20 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
   });
 
   useEffect(() => {
-    if (response?.type === "success") {
-      setToken(response.authentication.accessToken);
-      getUserInfo();
-    }
-  }, [response, token]);
+    (async () => {
+      if (googleResponse?.type === "success") {
+        const token = googleResponse.authentication.accessToken;
+        await AsyncStorage.setItem("TOKEN", token);
+        setIsAuthenticated(true);
+      }
 
-  const getUserInfo = async () => {
-    try {
-      const response = await fetch(
-        "https://www.googleapis.com/userinfo/v2/me",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const user = await response.json();
-      setUserInfo(user);
-    } catch (error) {
-      // Add your own error handler here
-    }
-  };
-
-  console.log("userInfo", userInfo, "token", token);
+      if (facebookResponse?.type === "success") {
+        const token = facebookResponse.authentication.accessToken;
+        await AsyncStorage.setItem("TOKEN", token);
+        setIsAuthenticated(true);
+      }
+    })();
+  }, [googleResponse, facebookResponse]);
 
   if (!fontsLoaded) return null;
 
@@ -128,21 +123,6 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
       }
     }
   };
-
-  // const handleGoogleSignIn = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const res = await fetch(
-  //       "https://0deb-110-227-111-23.ngrok-free.app/auth/google"
-  //     );
-  //     const data = await res.json();
-  //     console.log("data", data);
-  //   } catch (error) {
-  //     console.log("error", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const handleInputChange = (name: string, value: string) => {
     setInput((currentInput) => ({
@@ -192,6 +172,8 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
             <View className="flex items-center justify-center w-full space-y-5">
               <View className="flex flex-row justify-center items-center space-x-10">
                 <TouchableOpacity
+                  disabled={!facebookRequest}
+                  onPress={() => facebookPromptAsync()}
                   style={shadowStyles.shadow3}
                   className="flex bg-white flex-row justify-center items-center space-x-3 px-8 py-4 rounded-lg dark:bg-gray-800"
                 >
@@ -200,8 +182,8 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  disabled={!request}
-                  onPress={() => promptAsync()}
+                  disabled={!googleRequest}
+                  onPress={() => googlePromptAsync()}
                   style={shadowStyles.shadow3}
                   className="flex bg-white flex-row justify-center items-center space-x-3 px-8 py-4 rounded-lg dark:bg-gray-800"
                 >
