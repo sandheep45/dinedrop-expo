@@ -1,5 +1,5 @@
 //React
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 //React native
 import {
@@ -31,11 +31,11 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SignInParamList, SignUpParamList } from "../../../types/navigator";
 
 type Props = CompositeScreenProps<
-  NativeStackScreenProps<SignInParamList, "SignInPage">,
-  NativeStackScreenProps<SignUpParamList, "SignUpPage">
+  NativeStackScreenProps<SignUpParamList, "SignUpPage">,
+  NativeStackScreenProps<SignInParamList, "SignInPage">
 >;
 
-const SignUp = ({ navigation }: Props) => {
+const SignUp = ({ navigation, route }: Props) => {
   const colorScheme = useColorScheme();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [input, setInput] = useState({
@@ -110,7 +110,7 @@ const SignUp = ({ navigation }: Props) => {
                   <Entypo
                     name={isPasswordVisible ? "eye" : "eye-with-line"}
                     size={24}
-                    color="white"
+                    color={colorScheme === "dark" ? "#fff" : "#a1a1aa"}
                   />
                 </Pressable>
               </View>
@@ -141,9 +141,7 @@ const SignUp = ({ navigation }: Props) => {
             </View>
 
             <View className="flex gap-y-4">
-              <TouchableOpacity
-                onPress={() => navigation.navigate("BioPage", input)}
-              >
+              <TouchableOpacity onPress={() => navigation.navigate("BioPage")}>
                 <LinearGradient
                   colors={["#53E88B", "#15BE77"]}
                   start={{ x: 0, y: 1 }}

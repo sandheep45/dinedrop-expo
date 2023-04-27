@@ -16,7 +16,8 @@ import CameraIcon from "../../../assets/svg/CameraIcon";
 
 type Props = NativeStackScreenProps<SignUpParamList, "UploadImagePage">;
 
-const UploadImage: React.FC<Props> = ({ navigation }) => {
+const UploadImage: React.FC<Props> = ({ navigation, route: { params } }) => {
+  console.log(params);
   return (
     <SignUpLayout
       nextPage="Set Location"
@@ -29,7 +30,9 @@ const UploadImage: React.FC<Props> = ({ navigation }) => {
       <View className="flex gap-y-5 py-9 w-full items-center">
         <View className="flex gap-y-8 w-full dark:bg-[#252525] py-6 items-center rounded-lg">
           <GalleryIcon className="scale-[2]" />
-          <Text className="dark:text-white font-black text-lg">From Gallery</Text>
+          <Text className="dark:text-white font-black text-lg">
+            From Gallery
+          </Text>
         </View>
 
         <View className="flex gap-y-8 w-full dark:bg-[#252525] py-6 items-center rounded-lg">

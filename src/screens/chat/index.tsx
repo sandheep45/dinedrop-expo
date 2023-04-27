@@ -12,13 +12,13 @@ const ChatStack = () => {
     <Stack.Navigator >
       <Stack.Screen
         options={{ headerShown: false }}
-        name="AllChatsPage"
-        component={AllChat}
+        name="SingleChatPage"
+        component={SingleChat}
       />
       <Stack.Screen
         options={{ headerShown: false }}
-        name="SingleChatPage"
-        component={SingleChat}
+        name="AllChatsPage"
+        component={AllChat}
       />
       <Stack.Screen
         options={{ headerShown: false }}

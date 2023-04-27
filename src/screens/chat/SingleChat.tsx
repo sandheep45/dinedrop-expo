@@ -14,7 +14,7 @@ const SingleChat: React.FC<Props> = ({ navigation }) => {
         title="ALl Chat"
         onPress={() => navigation.navigate("AllChatsPage")}
       />
-      <Text>All chat</Text>
+      <Text className="dark:text-white">Single chat</Text>
     </SafeArea>
   );
 };

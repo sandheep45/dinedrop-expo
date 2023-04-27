@@ -1,5 +1,5 @@
 //React
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 //React native
 import {
@@ -14,6 +14,7 @@ import {
 //Expo
 import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
+import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import * as Facebook from "expo-auth-session/providers/facebook";
@@ -33,7 +34,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //types
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import type { SignInParamList } from "../../../types/navigator";
+import type {
+  AuthStackParamList,
+  SignInParamList,
+} from "../../../types/navigator";
 
 //Custom styles
 import shadowStyles from "../../styles/shadow";
@@ -41,61 +45,72 @@ import shadowStyles from "../../styles/shadow";
 //GraphQL
 import { gql } from "../../__generated__";
 import { ApolloError, useMutation } from "@apollo/client";
+import { CompositeScreenProps } from "@react-navigation/native";
 
-type Props = NativeStackScreenProps<SignInParamList, "SignInPage">;
+//Utils
+import useToast from "../../hooks/useToast";
+
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<AuthStackParamList, "SignUpStack">,
+  NativeStackScreenProps<SignInParamList, "SignInPage">
+>;
 
 const LOGIN = gql(`
-    mutation login($input: LoginUserInput!) {
-      login(loginUserInput: $input) {
+  mutation login($input: LoginUserInput!) {
+    login(loginUserInput: $input) {
+      access_token
+    }
+  }
+`);
+
+const SOCIAL_LOGIN = gql(`
+  mutation socialLogin($input: SocialOAuthInput!) {
+    socialLogin(socialLoginInput: $input) {
+      ... on LoginResponse {
+        _id
         access_token
+        email
+        firstName
+        lastName
+        mobileNumber
+        username
+      }
+      ... on SocialUser {
+        oAuthId
+        email
+        firstName
+        lastName
+        picture
+        username
       }
     }
-  `);
+  }
+`);
 
 WebBrowser.maybeCompleteAuthSession();
 
 const SignIn: React.FC<Props> = ({ navigation }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [googleRequest, googleResponse, googlePromptAsync] =
-    Google.useAuthRequest({
-      expoClientId:
-        "716798608893-lr0csd1s7ndb3jdeq57gro6370kd52fv.apps.googleusercontent.com",
-      androidClientId:
-        "716798608893-cvf244dc69tmifta7lpuo4saelhniqsm.apps.googleusercontent.com",
-      iosClientId:
-        "716798608893-84fkh9ag62iup2knc9b3p1vtimju9s8a.apps.googleusercontent.com",
-    });
-  const [facebookRequest, facebookResponse, facebookPromptAsync] =
-    Facebook.useAuthRequest({
-      clientId: "667150601837264",
-    });
+  const constants = Constants.expoConfig.extra;
+  const [googleRequest, _, googlePromptAsync] = Google.useAuthRequest({
+    expoClientId: constants.googleExpoClientId,
+    androidClientId: constants.googleAndroidClientId,
+    iosClientId: constants.googleIosClientId,
+  });
+  const [facebookRequest, __, facebookPromptAsync] = Facebook.useAuthRequest({
+    clientId: constants.facebookAppId,
+  });
   const [login, { loading }] = useMutation(LOGIN);
+  const [socialLogin, { loading: socialLoading }] = useMutation(SOCIAL_LOGIN);
   const [input, setInput] = useState({
     username: "",
     password: "",
   });
   const { setIsAuthenticated } = useAuthContext();
   const colorScheme = useColorScheme();
+  const { showToast, hideToast } = useToast();
   const [fontsLoaded] = useFonts({
     "BentonSans Bold": require("../../../assets/fonts/BentonSans/BentonSansBold.otf"),
   });
-
-  useEffect(() => {
-    (async () => {
-      if (googleResponse?.type === "success") {
-        const token = googleResponse.authentication.accessToken;
-        await AsyncStorage.setItem("TOKEN", token);
-        setIsAuthenticated(true);
-      }
-
-      if (facebookResponse?.type === "success") {
-        const token = facebookResponse.authentication.accessToken;
-        await AsyncStorage.setItem("TOKEN", token);
-        setIsAuthenticated(true);
-      }
-    })();
-  }, [googleResponse, facebookResponse]);
 
   if (!fontsLoaded) return null;
 
@@ -106,8 +121,8 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
       const { data } = await login({
         variables: {
           input: {
-            username,
-            password,
+            username: username.trim(),
+            password: password.trim(),
           },
         },
       });
@@ -124,6 +139,50 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
     }
   };
 
+  const handleSocialLogin = async (provider: "google" | "facebook") => {
+    const toastId = showToast({
+      message: "Please wait...",
+      type: "info",
+    });
+    try {
+      const res =
+        provider === "google"
+          ? await googlePromptAsync()
+          : await facebookPromptAsync();
+
+      if (res.type === "success") {
+        const { data } = await socialLogin({
+          variables: {
+            input: {
+              accessToken: res.authentication.accessToken,
+              provider,
+            },
+          },
+        });
+
+        if (data.socialLogin.__typename === "LoginResponse") {
+          await AsyncStorage.setItem("TOKEN", data.socialLogin.access_token);
+          setIsAuthenticated(true);
+        } else {
+          navigation.navigate("SignUpStack", {
+            screen: "SignUpPage",
+            params: data.socialLogin,
+          });
+        }
+      }
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        const { message, name } = error;
+        console.log("message", message, "name", name);
+        hideToast(toastId);
+        showToast({
+          message: "Something went wrong",
+          type: "error",
+        });
+      }
+    }
+  };
+
   const handleInputChange = (name: string, value: string) => {
     setInput((currentInput) => ({
       ...currentInput,
@@ -133,7 +192,7 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
 
   return (
     <KeyboardAvoidWrapper>
-      {(loading || isLoading) && <Loader />}
+      {(loading || socialLoading) && <Loader />}
       <View className="flex gap-6 bg-white flex-1 py-10 dark:bg-black">
         <AuthHero />
 
@@ -173,7 +232,7 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
               <View className="flex flex-row justify-center items-center space-x-10">
                 <TouchableOpacity
                   disabled={!facebookRequest}
-                  onPress={() => facebookPromptAsync()}
+                  onPress={() => handleSocialLogin("facebook")}
                   style={shadowStyles.shadow3}
                   className="flex bg-white flex-row justify-center items-center space-x-3 px-8 py-4 rounded-lg dark:bg-gray-800"
                 >
@@ -183,7 +242,7 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
 
                 <TouchableOpacity
                   disabled={!googleRequest}
-                  onPress={() => googlePromptAsync()}
+                  onPress={() => handleSocialLogin("google")}
                   style={shadowStyles.shadow3}
                   className="flex bg-white flex-row justify-center items-center space-x-3 px-8 py-4 rounded-lg dark:bg-gray-800"
                 >

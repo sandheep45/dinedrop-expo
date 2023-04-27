@@ -7,6 +7,13 @@ module.exports = {
     scheme: "com.dinedrop.mobile",
     icon: "./assets/images/logo.png",
     extra: {
+      googleExpoClientId:
+        "716798608893-lr0csd1s7ndb3jdeq57gro6370kd52fv.apps.googleusercontent.com",
+      googleAndroidClientId:
+        "716798608893-cvf244dc69tmifta7lpuo4saelhniqsm.apps.googleusercontent.com",
+      googleIosClientId:
+        "716798608893-84fkh9ag62iup2knc9b3p1vtimju9s8a.apps.googleusercontent.com",
+      facebookAppId: "667150601837264",
       eas: {
         projectId: "309e8c74-bd93-4057-a7d4-d0bb0aa7c28b",
       },

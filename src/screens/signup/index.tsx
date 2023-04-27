@@ -13,43 +13,46 @@ import UploadImage from "./UploadImage";
 
 //Types
 import type { SignUpParamList } from "../../../types/navigator";
+import SignUpContextProvider from "../../context/SignUpContextProvider";
 
 const Stack = createNativeStackNavigator<SignUpParamList>();
 
 const Index = () => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="SignUpPage"
-        component={SignUp}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="BioPage"
-        component={Bio}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="OtpPage"
-        component={Otp}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="SetLocationPage"
-        component={SetLocation}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="SuccessPage"
-        component={Success}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="UploadImagePage"
-        component={UploadImage}
-      />
-    </Stack.Navigator>
+    <SignUpContextProvider>
+      <Stack.Navigator>
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="SignUpPage"
+          component={SignUp}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="BioPage"
+          component={Bio}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="OtpPage"
+          component={Otp}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="SetLocationPage"
+          component={SetLocation}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="SuccessPage"
+          component={Success}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="UploadImagePage"
+          component={UploadImage}
+        />
+      </Stack.Navigator>
+    </SignUpContextProvider>
   );
 };
 

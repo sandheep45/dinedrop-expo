@@ -48,10 +48,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   createReference: Reference;
   createUser: User;
-  googleLogin: Scalars['Boolean'];
   login: LoginResponse;
   removeReference: Reference;
   signup: User;
+  socialLogin: ResultUnion;
   updateReference: Reference;
 };
 
@@ -78,6 +78,11 @@ export type MutationRemoveReferenceArgs = {
 
 export type MutationSignupArgs = {
   signupInput: CreateUser;
+};
+
+
+export type MutationSocialLoginArgs = {
+  socialLoginInput: SocialOAuthInput;
 };
 
 
@@ -110,6 +115,23 @@ export type Reference = {
   exampleField: Scalars['Int'];
 };
 
+export type ResultUnion = LoginResponse | SocialUser;
+
+export type SocialOAuthInput = {
+  accessToken: Scalars['String'];
+  provider: Scalars['String'];
+};
+
+export type SocialUser = {
+  __typename?: 'SocialUser';
+  email?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  oAuthId?: Maybe<Scalars['String']>;
+  picture?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
+};
+
 export type UpdateReferenceInput = {
   /** Example field (placeholder) */
   exampleField?: InputMaybe<Scalars['Int']>;
@@ -134,12 +156,14 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', access_token: string } };
 
-export type GoogleSignInMutationVariables = Exact<{ [key: string]: never; }>;
+export type SocialLoginMutationVariables = Exact<{
+  input: SocialOAuthInput;
+}>;
 
 
-export type GoogleSignInMutation = { __typename?: 'Mutation', googleLogin: boolean };
+export type SocialLoginMutation = { __typename?: 'Mutation', socialLogin: { __typename?: 'LoginResponse', _id?: string | null, access_token: string, email?: string | null, firstName?: string | null, lastName?: string | null, mobileNumber?: number | null, username?: string | null } | { __typename?: 'SocialUser', oAuthId?: string | null, email?: string | null, firstName?: string | null, lastName?: string | null, picture?: string | null, username?: string | null } };
 
 
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"loginUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
-export const GoogleSignInDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"googleSignIn"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"googleLogin"}}]}}]} as unknown as DocumentNode<GoogleSignInMutation, GoogleSignInMutationVariables>;
+export const SocialLoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"socialLogin"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SocialOAuthInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"socialLogin"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"socialLoginInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LoginResponse"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"access_token"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"mobileNumber"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SocialUser"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"oAuthId"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"picture"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<SocialLoginMutation, SocialLoginMutationVariables>;
 /** All built-in and custom scalars, mapped to their actual values */

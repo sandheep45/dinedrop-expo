@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 //React native
 import { View, TextInput, useColorScheme } from "react-native";
@@ -12,8 +12,21 @@ import type { SignUpParamList } from "../../../types/navigator";
 
 type Props = NativeStackScreenProps<SignUpParamList, "BioPage">;
 
-const Bio = ({ navigation }: Props) => {
+const Bio: React.FC<Props> = ({ navigation }) => {
   const colorScheme = useColorScheme();
+  const [input, setInput] = useState({
+    firstName: "",
+    lastName: "",
+    mobileNumber: "",
+  });
+
+  const handleInputChange = (name: string, value: string) => {
+    setInput((currentInput) => ({
+      ...currentInput,
+      [name]: value,
+    }));
+  };
+
   return (
     <SignUpLayout
       nextPage="Add Profile Pic"
@@ -27,17 +40,23 @@ const Bio = ({ navigation }: Props) => {
         <TextInput
           placeholderTextColor={colorScheme === "dark" ? "#fff" : "#a1a1aa"}
           className="w-full h-16 p-4 border border-gray-200 rounded-lg dark:bg-gray-800 dark:text-white dark:border-gray-800"
+          onChangeText={(value) => handleInputChange("firstname", value)}
+          value={input.firstName}
           placeholder="First Name"
         />
 
         <TextInput
           placeholderTextColor={colorScheme === "dark" ? "#fff" : "#a1a1aa"}
+          onChangeText={(value) => handleInputChange("lastName", value)}
+          value={input.lastName}
           className="w-full h-16 p-4 border border-gray-200 rounded-lg dark:bg-gray-800 dark:text-white dark:border-gray-800"
           placeholder="Last Name"
         />
 
         <TextInput
           placeholderTextColor={colorScheme === "dark" ? "#fff" : "#a1a1aa"}
+          onChangeText={(value) => handleInputChange("mobileNumber", value)}
+          value={input.mobileNumber}
           className="w-full h-16 p-4 border border-gray-200 rounded-lg dark:bg-gray-800 dark:text-white dark:border-gray-800"
           placeholder="Mobile Number"
         />

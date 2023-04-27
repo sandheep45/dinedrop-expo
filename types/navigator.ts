@@ -1,6 +1,9 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
+import { SocialUser } from "../src/__generated__/graphql";
+
 export type AuthStackParamList = {
-  SignInStack: undefined;
-  SignUpStack: undefined;
+  SignInStack: NavigatorScreenParams<SignInParamList>;
+  SignUpStack: NavigatorScreenParams<SignUpParamList>;
 };
 
 type SuccessPage = {
@@ -32,9 +35,9 @@ type UploadImagePage = {
 };
 
 export type SignUpParamList = {
-  SignUpPage: undefined;
-  BioPage: BioPage;
-  UploadImagePage: UploadImagePage & BioPage;
+  SignUpPage: SocialUser;
+  BioPage: undefined;
+  UploadImagePage: undefined;
   SetLocationPage: undefined;
   OtpPage: undefined;
   SuccessPage: SuccessPage;

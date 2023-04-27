@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //React native
-import { useColorScheme } from "react-native";
+import { useColorScheme, TouchableOpacity } from "react-native";
 
 //React Navigation
 import {
@@ -62,9 +62,7 @@ const getRouteName = (
 // Initialize Apollo Client
 const client = new ApolloClient({
   uri: LOCAL_SERVER_URL,
-  cache: new InMemoryCache({
-    addTypename: false,
-  }),
+  cache: new InMemoryCache({}),
 });
 
 export default function App() {
@@ -108,6 +106,11 @@ export default function App() {
             <AuthTab.Navigator>
               <AuthTab.Screen
                 name="SignInStack"
+                // listeners={({ route }) => ({
+                //   tabPress: (e) => {
+                //     e.preventDefault();
+                //   },
+                // })}
                 options={{
                   headerShown: false,
                   tabBarLabel: "SignIn",

@@ -15,7 +15,7 @@ import LocationIcon from "../../../assets/svg/LocationIcon";
 
 type Props = NativeStackScreenProps<SignUpParamList, "SetLocationPage">;
 
-const SetLocation: React.FC<Props> = ({ navigation }) => {
+const SetLocation: React.FC<Props> = ({ navigation, route }) => {
   return (
     <SignUpLayout
       nextPage="Verify OTP"
@@ -28,11 +28,15 @@ const SetLocation: React.FC<Props> = ({ navigation }) => {
       <View className="flex space-y-6 w-full">
         <View className="flex flex-row items-center gap-2">
           <LocationIcon />
-          <Text className="text-xl font-bold dark:text-white">Your Location</Text>
+          <Text className="text-xl font-bold dark:text-white">
+            Your Location
+          </Text>
         </View>
 
         <TouchableOpacity className="w-full py-4 rounded-md bg-[#F6F6F6]">
-          <Text className="text-center text-lg font-semibold">Set Location</Text>
+          <Text className="text-center text-lg font-semibold">
+            Set Location
+          </Text>
         </TouchableOpacity>
       </View>
     </SignUpLayout>

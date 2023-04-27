@@ -7,7 +7,7 @@ const config: CodegenConfig = {
       [LOCAL_SERVER_URL]: {
         headers: {
           Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJTYW4iLCJ1c2VybmFtZSI6IlN1c3NhbiIsImlhdCI6MTY4MDAxMzIyMH0.OaHo82RsXeJ6VF8OQKbpPQOlr54WB_q5ZWOZ3rKLSU8",
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDQzYjI4MzMxMjVlMWYwNjM0NTVlZGUiLCJ1c2VybmFtZSI6IlNhbmRlZXAiLCJpYXQiOjE2ODIxNTgyMzcsImV4cCI6MTY4MjE1ODI5N30.FPVf895imPrDRjTalyq8lJ1SvBruSeElLfHllbq7U1k",
         },
       },
     },
