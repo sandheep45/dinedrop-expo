@@ -20,6 +20,10 @@ import { Entypo } from "@expo/vector-icons";
 import AuthHero from "../../components/global/AuthHero";
 import KeyboardAvoidWrapper from "../../components/global/KeyboardAvoidWrapper";
 
+//Custom Hooks
+import { useSignUpContext } from "../../context/SignUpContextProvider";
+import useToast from "../../hooks/useToast";
+
 //SVGs
 import ProfileIcon from "../../../assets/svg/ProfileIcon";
 import MailIcon from "../../../assets/svg/MailIcon";
@@ -37,6 +41,8 @@ type Props = CompositeScreenProps<
 
 const SignUp = ({ navigation, route }: Props) => {
   const colorScheme = useColorScheme();
+  const { setSignUpState, signUpState } = useSignUpContext();
+  const { showToast } = useToast();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [input, setInput] = useState({
     username: "",
@@ -46,11 +52,42 @@ const SignUp = ({ navigation, route }: Props) => {
     emailForAds: false,
   });
 
+  useEffect(() => {
+    if (route.params?.email && route.params?.username) {
+      setInput((currentValue) => ({
+        ...currentValue,
+        email: route.params?.email,
+        username: route.params?.username,
+      }));
+    }
+  }, [route.params]);
+
   const handleInput = (name: string, value: string | boolean) => {
     setInput((currentValue) => ({
       ...currentValue,
       [name]: value,
     }));
+  };
+
+  const handleNextButton = () => {
+    if (Object.values(input).some((value) => value === "")) {
+      showToast({
+        message: "Please fill in all the fields",
+        type: "error",
+      });
+      return;
+    }
+
+    setSignUpState((currentState) => ({
+      username: input.username,
+      email: input.email,
+      password: input.password,
+      firstname: route.params?.firstName,
+      lastname: route.params?.lastName,
+      phone: "",
+      picture: route.params.picture,
+    }));
+    navigation.navigate("BioPage");
   };
 
   return (
@@ -95,7 +132,7 @@ const SignUp = ({ navigation, route }: Props) => {
                 <PasswordIcon className="absolute top-5 left-2 z-10" />
                 <TextInput
                   onChangeText={(value) => handleInput("password", value)}
-                  secureTextEntry={isPasswordVisible}
+                  secureTextEntry={!isPasswordVisible}
                   value={input.password}
                   placeholderTextColor={
                     colorScheme === "dark" ? "#fff" : "#a1a1aa"
@@ -108,7 +145,7 @@ const SignUp = ({ navigation, route }: Props) => {
                   onPress={() => setIsPasswordVisible(!isPasswordVisible)}
                 >
                   <Entypo
-                    name={isPasswordVisible ? "eye" : "eye-with-line"}
+                    name={!isPasswordVisible ? "eye" : "eye-with-line"}
                     size={24}
                     color={colorScheme === "dark" ? "#fff" : "#a1a1aa"}
                   />
@@ -141,7 +178,7 @@ const SignUp = ({ navigation, route }: Props) => {
             </View>
 
             <View className="flex gap-y-4">
-              <TouchableOpacity onPress={() => navigation.navigate("BioPage")}>
+              <TouchableOpacity onPress={handleNextButton}>
                 <LinearGradient
                   colors={["#53E88B", "#15BE77"]}
                   start={{ x: 0, y: 1 }}

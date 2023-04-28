@@ -164,6 +164,11 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
           await AsyncStorage.setItem("TOKEN", data.socialLogin.access_token);
           setIsAuthenticated(true);
         } else {
+          hideToast(toastId);
+          showToast({
+            message: "No details found, please sign up",
+            type: "info",
+          });
           navigation.navigate("SignUpStack", {
             screen: "SignUpPage",
             params: data.socialLogin,

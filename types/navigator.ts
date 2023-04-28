@@ -20,20 +20,6 @@ export type SignInParamList = {
   SuccessPage: SuccessPage;
 };
 
-type BioPage = {
-  username: string;
-  email: string;
-  password: string;
-  keepSignedIn: boolean;
-  emailForAds: boolean;
-};
-
-type UploadImagePage = {
-  firstName: string;
-  lastName: string;
-  mobileNumber: string;
-};
-
 export type SignUpParamList = {
   SignUpPage: SocialUser;
   BioPage: undefined;

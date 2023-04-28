@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-//AsyncStorage
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 //React native
-import { useColorScheme, TouchableOpacity } from "react-native";
+import { useColorScheme } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //React Navigation
 import {
@@ -21,8 +20,7 @@ import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
 //Apollo graphql
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-
-//GraphQL
+import { createUploadLink } from "apollo-upload-client";
 
 //Screens
 import Onboarding from "./src/screens/Onboarding";
@@ -33,6 +31,12 @@ import ProfileStack from "./src/screens/profile";
 import CartStack from "./src/screens/cart";
 import ChatStack from "./src/screens/chat";
 
+//Context
+import { useAuthContext } from "./src/context/AuthContextProvider";
+
+//Utils
+import { LOCAL_SERVER_URL } from "./constant";
+
 //Types
 import { MainPageParamList, AuthStackParamList } from "./types/navigator";
 
@@ -42,9 +46,6 @@ import HomeIcon from "./assets/svg/HomeIcon";
 import ProfileIcon from "./assets/svg/ProfileIcon";
 import CartIcon from "./assets/svg/CartIcon";
 import ChatIcon from "./assets/svg/ChatIcon";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { LOCAL_SERVER_URL } from "./constant";
-import { useAuthContext } from "./src/context/AuthContextProvider";
 
 const AuthTab = createBottomTabNavigator<AuthStackParamList>();
 const HomeTab = createBottomTabNavigator<MainPageParamList>();
@@ -63,6 +64,7 @@ const getRouteName = (
 const client = new ApolloClient({
   uri: LOCAL_SERVER_URL,
   cache: new InMemoryCache({}),
+  link: createUploadLink({ uri: LOCAL_SERVER_URL }),
 });
 
 export default function App() {
@@ -106,11 +108,6 @@ export default function App() {
             <AuthTab.Navigator>
               <AuthTab.Screen
                 name="SignInStack"
-                // listeners={({ route }) => ({
-                //   tabPress: (e) => {
-                //     e.preventDefault();
-                //   },
-                // })}
                 options={{
                   headerShown: false,
                   tabBarLabel: "SignIn",

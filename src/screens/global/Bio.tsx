@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 //React native
 import { View, TextInput, useColorScheme } from "react-native";
 
 //Components
 import SignUpLayout from "../../components/layout/SignUpLayout";
+
+//Custom Hooks
+import { useSignUpContext } from "../../context/SignUpContextProvider";
+import useToast from "../../hooks/useToast";
 
 //Types
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -14,11 +18,23 @@ type Props = NativeStackScreenProps<SignUpParamList, "BioPage">;
 
 const Bio: React.FC<Props> = ({ navigation }) => {
   const colorScheme = useColorScheme();
+  const { showToast } = useToast();
+  const { setSignUpState, signUpState } = useSignUpContext();
   const [input, setInput] = useState({
     firstName: "",
     lastName: "",
     mobileNumber: "",
   });
+
+  useEffect(() => {
+    if (signUpState.firstname && signUpState.lastname) {
+      setInput({
+        firstName: signUpState.firstname,
+        lastName: signUpState.lastname,
+        mobileNumber: "",
+      });
+    }
+  }, [signUpState]);
 
   const handleInputChange = (name: string, value: string) => {
     setInput((currentInput) => ({
@@ -27,13 +43,31 @@ const Bio: React.FC<Props> = ({ navigation }) => {
     }));
   };
 
+  const handleNextButton = () => {
+    if (Object.values(input).some((value) => value === "")) {
+      showToast({
+        message: "Please fill in all the fields",
+        type: "error",
+      });
+      return;
+    }
+
+    setSignUpState((currentState) => ({
+      ...currentState,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      phone: input.mobileNumber,
+    }));
+    navigation.navigate("UploadImagePage");
+  };
+
   return (
     <SignUpLayout
       nextPage="Add Profile Pic"
       heading="Fill in your bio to get started"
       info="This data will be displayed in your account profile for security"
       onPressPrev={() => navigation.goBack()}
-      onPressNext={() => navigation.navigate("UploadImagePage")}
+      onPressNext={handleNextButton}
       className="flex-1 flex items-center justify-between py-4"
     >
       <View className="flex items-center justify-center w-full gap-y-3 pr-3">
