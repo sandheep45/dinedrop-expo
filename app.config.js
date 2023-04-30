@@ -54,11 +54,19 @@ module.exports = {
       bundleIdentifier: "com.dinedrop.mobile",
       supportsTablet: true,
     },
+    config: {
+      googleMapsApiKey: "AIzaSyD1JMmBKITn2irPF7KMJEaqm7ioehxQlbc",
+    },
     android: {
       package: "com.dinedrop.mobile",
       adaptiveIcon: {
         foregroundImage: "./assets/images/logo.png",
         backgroundColor: "#FFFFFF",
+      },
+      config: {
+        googleMaps: {
+          apiKey: "AIzaSyAZT_3N9tC79Ynrbnma1y_AmPQqg7gLzlQ",
+        },
       },
       splash: {
         dark: {

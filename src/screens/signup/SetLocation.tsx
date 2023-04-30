@@ -19,12 +19,13 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 //Svgs
 import LocationIcon from "../../../assets/svg/LocationIcon";
 import { useSignUpContext } from "../../context/SignUpContextProvider";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 type Props = NativeStackScreenProps<SignUpParamList, "SetLocationPage">;
 
 const SetLocation: React.FC<Props> = ({ navigation }) => {
   const { showToast } = useToast();
-  const { setSignUpState } = useSignUpContext();
+  const { setSignUpState, signUpState } = useSignUpContext();
 
   const getLocation = async () => {
     try {
@@ -76,6 +77,17 @@ const SetLocation: React.FC<Props> = ({ navigation }) => {
             Set Location
           </Text>
         </TouchableOpacity>
+
+        <MapView provider={PROVIDER_GOOGLE} showsUserLocation loadingEnabled className="w-full h-96">
+          {signUpState.location && (
+            <Marker
+              coordinate={{
+                latitude: signUpState.location?.coords.latitude,
+                longitude: signUpState.location?.coords.longitude,
+              }}
+            />
+          )}
+        </MapView>
       </View>
     </SignUpLayout>
   );
