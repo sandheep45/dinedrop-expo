@@ -1,4 +1,5 @@
 import * as React from "react";
+import {LocationCallback, LocationObject} from 'expo-location'
 
 const initialState = {
   signUpState: {
@@ -9,6 +10,7 @@ const initialState = {
     lastname: "",
     phone: "",
     picture: "",
+    location: null,
   },
   setSignUpState: () => {},
 };
@@ -21,6 +23,7 @@ interface SignUpContext {
   lastname: string;
   phone: string;
   picture: string;
+  location: LocationObject | null;
 }
 
 interface IContext {
@@ -39,6 +42,7 @@ const SignUpContextProvider = ({ children }: { children: React.ReactNode }) => {
     lastname: "",
     phone: "",
     picture: "",
+    location: null,
   });
 
   const signUpContextObj = React.useMemo(

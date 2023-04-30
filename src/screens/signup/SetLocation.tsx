@@ -13,29 +13,42 @@ import SignUpLayout from "../../components/layout/SignUpLayout";
 import useToast from "../../hooks/useToast";
 
 //Types
-import { SignUpParamList } from "../../../types/navigator";
+import type { SignUpParamList } from "../../../types/navigator";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 //Svgs
 import LocationIcon from "../../../assets/svg/LocationIcon";
+import { useSignUpContext } from "../../context/SignUpContextProvider";
 
 type Props = NativeStackScreenProps<SignUpParamList, "SetLocationPage">;
 
 const SetLocation: React.FC<Props> = ({ navigation }) => {
   const { showToast } = useToast();
+  const { setSignUpState } = useSignUpContext();
 
   const getLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        showToast({
+          message: "Permission to access location was denied",
+          type: "error",
+        });
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      setSignUpState((currentValue) => ({
+        ...currentValue,
+        location,
+      }));
+    } catch (error) {
       showToast({
-        message: "Permission to access location was denied",
+        message: error.message,
         type: "error",
       });
       return;
     }
-
-    const location = await Location.getCurrentPositionAsync({});
-    console.log(location);
   };
 
   return (

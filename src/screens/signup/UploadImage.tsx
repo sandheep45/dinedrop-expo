@@ -7,29 +7,30 @@ import { Text, View, Pressable, Image, Button } from "react-native";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 
-//Apollo graphql
-import { ReactNativeFile } from "apollo-upload-client";
-
 //Components
 import SignUpLayout from "../../components/layout/SignUpLayout";
 
 //Custom Hook
 import useToast from "../../hooks/useToast";
 import { useSignUpContext } from "../../context/SignUpContextProvider";
+import { useUploadToCloudinary } from "../../hooks/useFileUploadToCloudinary";
 
 //Types
-import { SignUpParamList } from "../../../types/navigator";
+import type { SignUpParamList } from "../../../types/navigator";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 //Svgs
 import GalleryIcon from "../../../assets/svg/GalleryIcon";
 import CameraIcon from "../../../assets/svg/CameraIcon";
 import ClickPictureIcon from "../../../assets/svg/ClickPictureIcon";
+import { CloudinaryUploadImageResponse } from "../../../types/CloudinaryUploadImageResponse";
+import Loader from "../../components/global/Loader";
 
 type Props = NativeStackScreenProps<SignUpParamList, "UploadImagePage">;
 
 const UploadImage: React.FC<Props> = ({ navigation }) => {
   let camera: Camera;
+  const { start, isUploading, hasErrored } = useUploadToCloudinary();
   const { showToast } = useToast();
   const [startCamera, setStartCamera] = useState(false);
   const [image, setImage] = useState("");
@@ -60,8 +61,10 @@ const UploadImage: React.FC<Props> = ({ navigation }) => {
 
   const takePicture = async () => {
     try {
-      const photo = await camera.takePictureAsync();
-      setImage(photo.uri);
+      const photo = await camera.takePictureAsync({
+        base64: true,
+      });
+      setImage(`data:image/jpg;base64,${photo.base64}`);
       setStartCamera(false);
     } catch (error) {
       console.log(error);
@@ -76,17 +79,18 @@ const UploadImage: React.FC<Props> = ({ navigation }) => {
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
+        base64: true,
       });
 
       if (!result.canceled) {
-        setImage(result.assets[0].uri);
+        setImage(`data:image/jpg;base64,${result.assets[0].base64}`);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleNextButton = () => {
+  const handleNextButton = async () => {
     if (!image) {
       showToast({
         message: "Please select an image",
@@ -95,17 +99,26 @@ const UploadImage: React.FC<Props> = ({ navigation }) => {
       return;
     }
 
-    const file = new ReactNativeFile({
-      uri: image,
-      name: signUpState.username,
-      type: "image/jpeg",
+    if (image === signUpState.picture) {
+      navigation.navigate("SetLocationPage");
+      return;
+    }
+
+    start(image, "image", signUpState.username, (data) => {
+      setImage(data.secure_url);
+      setSignUpState((prevState) => ({
+        ...prevState,
+        picture: data.secure_url,
+      }));
+      navigation.navigate("SetLocationPage");
     });
 
-    setSignUpState((currentState) => ({
-      ...currentState,
-      picture: file,
-    }));
-    navigation.navigate("SetLocationPage");
+    if (hasErrored) {
+      showToast({
+        message: "Something went wrong",
+        type: "error",
+      });
+    }
   };
 
   if (startCamera) {
@@ -127,45 +140,48 @@ const UploadImage: React.FC<Props> = ({ navigation }) => {
   }
 
   return (
-    <SignUpLayout
-      nextPage="Set Location"
-      heading="Upload Your Photo Profile"
-      info="This data will be displayed in your account profile for security"
-      onPressPrev={() => navigation.goBack()}
-      onPressNext={handleNextButton}
-      className="flex-1 flex items-center justify-between py-4"
-    >
-      {image ? (
-        <View className="flex-1 gap-3">
-          <Image source={{ uri: image, height: 400, width: 400 }} />
-          <View>
-            <Button title="Remove Image" onPress={() => setImage("")} />
+    <>
+      {isUploading && <Loader />}
+      <SignUpLayout
+        nextPage="Set Location"
+        heading="Upload Your Photo Profile"
+        info="This data will be displayed in your account profile for security"
+        onPressPrev={() => navigation.goBack()}
+        onPressNext={handleNextButton}
+        className="flex-1 flex items-center justify-between py-4"
+      >
+        {image ? (
+          <View className="flex-1 gap-3">
+            <Image source={{ uri: image, height: 400, width: 400 }} />
+            <View>
+              <Button title="Remove Image" onPress={() => setImage("")} />
+            </View>
           </View>
-        </View>
-      ) : (
-        <View className="flex gap-y-5 py-9 w-full items-center">
-          <Pressable
-            onPress={pickImage}
-            className="flex gap-y-8 w-full dark:bg-[#252525] py-6 items-center rounded-lg"
-          >
-            <GalleryIcon className="scale-[2]" />
-            <Text className="dark:text-white font-black text-lg">
-              From Gallery
-            </Text>
-          </Pressable>
+        ) : (
+          <View className="flex gap-y-5 py-9 w-full items-center">
+            <Pressable
+              onPress={pickImage}
+              className="flex gap-y-8 w-full dark:bg-[#252525] py-6 items-center rounded-lg"
+            >
+              <GalleryIcon className="scale-[2]" />
+              <Text className="dark:text-white font-black text-lg">
+                From Gallery
+              </Text>
+            </Pressable>
 
-          <Pressable
-            onPress={openCamera}
-            className="flex gap-y-8 w-full dark:bg-[#252525] py-6 items-center rounded-lg"
-          >
-            <CameraIcon className="scale-[2]" />
-            <Text className="dark:text-white font-black text-lg">
-              Take Photo
-            </Text>
-          </Pressable>
-        </View>
-      )}
-    </SignUpLayout>
+            <Pressable
+              onPress={openCamera}
+              className="flex gap-y-8 w-full dark:bg-[#252525] py-6 items-center rounded-lg"
+            >
+              <CameraIcon className="scale-[2]" />
+              <Text className="dark:text-white font-black text-lg">
+                Take Photo
+              </Text>
+            </Pressable>
+          </View>
+        )}
+      </SignUpLayout>
+    </>
   );
 };
 

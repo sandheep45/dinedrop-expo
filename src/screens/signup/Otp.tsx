@@ -16,6 +16,7 @@ import SignUpLayout from "../../components/layout/SignUpLayout";
 //Types
 import { SignUpParamList } from "../../../types/navigator";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useSignUpContext } from "../../context/SignUpContextProvider";
 
 const CELL_COUNT = 4;
 
@@ -23,6 +24,7 @@ type Props = NativeStackScreenProps<SignUpParamList, "OtpPage">;
 
 const Otp: React.FC<Props> = ({ navigation }) => {
   const [value, setValue] = useState("");
+  const { signUpState } = useSignUpContext();
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
@@ -32,7 +34,7 @@ const Otp: React.FC<Props> = ({ navigation }) => {
     <SignUpLayout
       nextPage="Verify OTP"
       heading="Enter 4-digit Verification code"
-      info="Code send to +6282045**** . This code will expired in 01:30"
+      info={`We have sent a 4-digit verification code to ${signUpState?.email}`}
       onPressPrev={() => navigation.goBack()}
       onPressNext={() =>
         navigation.navigate("SuccessPage", {
@@ -62,7 +64,9 @@ const Otp: React.FC<Props> = ({ navigation }) => {
             }`}
             key={index}
           >
-            <Text className="dark:text-white text-3xl">{symbol || (isFocused ? <Cursor /> : null)}</Text>
+            <Text className="dark:text-white text-3xl">
+              {symbol || (isFocused ? <Cursor /> : null)}
+            </Text>
           </View>
         )}
       />

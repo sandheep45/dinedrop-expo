@@ -177,11 +177,10 @@ const SignIn: React.FC<Props> = ({ navigation }) => {
       }
     } catch (error) {
       if (error instanceof ApolloError) {
-        const { message, name } = error;
-        console.log("message", message, "name", name);
+        const { message } = error;
         hideToast(toastId);
         showToast({
-          message: "Something went wrong",
+          message: message,
           type: "error",
         });
       }

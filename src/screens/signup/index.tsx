@@ -11,9 +11,11 @@ import SetLocation from "./SetLocation";
 import Success from "../global/Success";
 import UploadImage from "./UploadImage";
 
+//Context
+import SignUpContextProvider from "../../context/SignUpContextProvider";
+
 //Types
 import type { SignUpParamList } from "../../../types/navigator";
-import SignUpContextProvider from "../../context/SignUpContextProvider";
 
 const Stack = createNativeStackNavigator<SignUpParamList>();
 

@@ -40,7 +40,7 @@ module.exports = {
         projectId: "309e8c74-bd93-4057-a7d4-d0bb0aa7c28b",
       },
     },
-    userInterfaceStyle: "light",
+    userInterfaceStyle: "automatic",
     splash: {
       image: "./assets/images/splash-screen.png",
       resizeMode: "contain",

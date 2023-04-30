@@ -20,7 +20,6 @@ import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
 //Apollo graphql
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import { createUploadLink } from "apollo-upload-client";
 
 //Screens
 import Onboarding from "./src/screens/Onboarding";
@@ -64,7 +63,6 @@ const getRouteName = (
 const client = new ApolloClient({
   uri: LOCAL_SERVER_URL,
   cache: new InMemoryCache({}),
-  link: createUploadLink({ uri: LOCAL_SERVER_URL }),
 });
 
 export default function App() {

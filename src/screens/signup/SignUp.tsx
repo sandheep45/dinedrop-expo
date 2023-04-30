@@ -32,7 +32,7 @@ import PasswordIcon from "../../../assets/svg/PasswordIcon";
 //Types
 import type { CompositeScreenProps } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { SignInParamList, SignUpParamList } from "../../../types/navigator";
+import type { SignInParamList, SignUpParamList } from "../../../types/navigator";
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<SignUpParamList, "SignUpPage">,
